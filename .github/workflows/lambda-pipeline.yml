@@ -47,3 +47,5 @@ jobs:
           sleep 5
           chmod +x scripts/check_invoke.sh
           ./scripts/check_invoke.sh
+      - name: clean up container
+        run: docker stop $(docker ps -q --filter "ancestor=${DOCKER_IMAGE}:latest")
