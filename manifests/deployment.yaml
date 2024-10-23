@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lambda-function-deployment
+  labels:
+    app: lambda-function
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lambda-function
+  template:
+    metadata:
+      labels:
+        app: lambda-function
+    spec:
+      containers:
+      - name: lambda-function
+        image: ${CLUSTER}:${CLUSTER_REGISTRY_PORT}/${DOCKER_IMAGE}:latest
+        ports:
+        - containerPort: 80
