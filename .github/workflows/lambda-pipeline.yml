@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - main
+env:
+  DOCKER_IMAGE: lambda-app
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -29,9 +31,19 @@ jobs:
           python -m pip install ruff
           ruff check --output-format=github .
         continue-on-error: true
-      - name: Run tests
+      - name: Run unit tests
         run: |
           python -m pip install --upgrade pip
           python -m pip install pytest pytest-cov
           pytest --cov-report term-missing --cov=lambda_app/ tests/
         continue-on-error: true
+      - name: Build Docker image
+        run: |
+          poetry export --without-hashes > lambda_app/requirements.txt
+          docker build -t ${DOCKER_IMAGE} .
+      - name: Run integration test 
+        run: |
+          docker run -d -p 3001:8080 ${DOCKER_IMAGE}:latest
+          sleep 5
+          chmod +x scripts/check_invoke.sh
+          ./scripts/check_invoke.sh
