@@ -54,6 +54,28 @@ def lambda_handler(event: LambdaEvent, context: LambdaContext) -> LambdaOutput: 
     #        'body': 'Return_value_of_process_function',
     #    }
     #
+    
 
-    ...
+    try:
+        if 'body' not in event:
+            return {
+                'statusCode': 400,
+                'body': 'missing body'
+            }
+        message = event ['body']
+
+        if message == "{}":
+            return {
+                'statusCode': 400,
+                'body': 'no message'
+            }
+        return {
+            'statusCode': 200,
+            'body': process(message)
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': f"error message: {e}"
+        }
 
