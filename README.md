@@ -33,7 +33,7 @@ You are responsible for organizing your code directories clearly and explicitly 
 ## 🎯 Set Up the CI/CD
 
 Throughout the assessment, design a step-by-step CI/CD workflow using GitHub Actions to automatically:
-- Build the Docker image of the lambda function
+- Build the Docker image of the lambda function (https://github.com/docker/build-push-action)
 - Check coding rules with ruff (already included in the base workflow)
 - Test and measure test coverage with pytest and pytest-cov (already included in the base workflow)
 - Invoke the lambda function locally using `curl` and check its response as an integration test
@@ -53,7 +53,7 @@ You are also responsible for developing the corresponding unit tests (we advise 
 
 Coding rules are checked with `ruff` (coding rules are set in `pyproject.toml`).
 Unit testing is run by `pytest` and code coverage with `pytest-cov`.
-
+(https://docs.pytest.org/en/stable/example/simple.html)
 ```bash
 ruff check .
 pytest --cov-report term-missing --cov=lambda_app python/test/dir
@@ -65,9 +65,11 @@ You are responsible for developing Python code with the highest possible test co
 Fill the `Dockerfile` to package your lambda function using the base image `public.ecr.aws/lambda/python:3.12`.
 
 Write a bash command to build the image from the `Dockerfile`.
-
+(https://gallery.ecr.aws/lambda/python)
 ```bash
-...
+poetry export --without-hashes > lambda_app/requirements.txt
+
+docker build -t ${DOCKER_IMAGE} .
 ```
 
 ## 🎯 Check the Local Invocation of the Application
@@ -77,12 +79,17 @@ Write a bash command to build the image from the `Dockerfile`.
 Using the Docker image and the small bash script below, check that the lambda function can be invoked locally using `curl` with the event files from `events`.
 
 ```bash
-docker run -p 3001:8080 ${DOCKER_IMAGE}:latest
+docker run -d -p 3001:8080 ${DOCKER_IMAGE}:latest
 
 curl -d @events/event.json  http://localhost:3001/2015-03-31/functions/function/invocations
 ```
 
 Propose a solution to automate the check of the `curl` response in the CI.
+```bash
+chmod +x scripts/check_invoke.sh
+
+./scripts/check_invoke.sh
+```
 
 ## 🎯 Deploy Your Application in a Local Kubernetes Cluster
 
