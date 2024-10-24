@@ -1,4 +1,4 @@
-name: Deploy Lambda with CloudFormation
+name: Deploy
 
 on:
   workflow_dispatch:
