@@ -49,6 +49,9 @@ jobs:
           ./scripts/check_invoke.sh
       - name: clean up container
         run: docker stop $(docker ps -q --filter "ancestor=${DOCKER_IMAGE}:latest")
+      - name: Build Docker image for ecr
+        run: |
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest .
       - name: Push Docker image to ECR
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
