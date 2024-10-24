@@ -1,0 +1,31 @@
+name: Deploy Lambda with CloudFormation
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'param'
+        required: true
+        default: 'test'
+env:
+  ECR_URI: 939814546727.dkr.ecr.eu-west-3.amazonaws.com/rami/lambda
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }} 
+    - name: Deploy CloudFormation stack
+      run: |
+        aws cloudformation deploy \
+          --template-file cloudformation/deploy-lambda.yaml \
+          --stack-name lambda-app-stack \
+          --capabilities CAPABILITY_IAM \
+          --parameter-overrides \
+            ImageUri=$ECR_URI
