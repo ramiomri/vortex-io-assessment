@@ -32,6 +32,6 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn
       PackageType: "Image"
       Code:
-        ImageUri: "939814546727.dkr.ecr.eu-west-3.amazonaws.com/rami/lambda"
+        ImageUri: "939814546727.dkr.ecr.eu-west-3.amazonaws.com/rami/lambda:latest"
       MemorySize: 512
       Timeout: 30
