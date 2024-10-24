@@ -1,3 +1,4 @@
+name: lambda Pipeline
 on:
   push:
     branches:
